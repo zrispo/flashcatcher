@@ -1,16 +1,10 @@
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
-	if (document.readyState === "complete") {
-		clearInterval(readyStateCheckInterval);
+		if (document.readyState === "complete") {
+			clearInterval(readyStateCheckInterval);
 
-		// ----------------------------------------------------------
-		// This part of the script triggers when page is done loading
-		console.log("Hello. This message was sent from scripts/inject.js");
-		// ----------------------------------------------------------
-
-		main();
-
-	}
+			main();
+		}
 	}, 10);
 });
 
@@ -22,6 +16,11 @@ function getElementsByTagNameArray (tagName) {
 	return array;
 }
 
+function filenameFromURL (path) {
+	var split = path.split('/');
+	return split[split.length-1].split('.')[0];
+}
+
 function main () {
 
 	var allFoundElems = [];
@@ -29,7 +28,16 @@ function main () {
 	allFoundElems = allFoundElems.concat(getElementsByTagNameArray('object'));
 
 	allFoundElems.forEach(function (elem) {
-		window.open(elem.data || elem.src);
+		var swfUrl = elem.data || elem.src;
+		window.open(swfUrl)
+
+		var extraInfo = {
+			url: window.location.href,
+			title: document.title,
+		};
+		var extraInfoJson = JSON.stringify(extraInfo, null, 4);
+		var blob = new Blob([extraInfoJson], {type: "application/json"});
+		saveAs(blob, filenameFromURL(swfUrl));
 	});
 
 }

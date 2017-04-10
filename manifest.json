@@ -20,7 +20,7 @@
     "default_popup": "src/page_action/page_action.html"
   },
   "permissions": [
-    "tabs", "<all_urls>"
+    "tabs", "<all_urls>", "pageCapture"
   ],
   "content_scripts": [
     {
@@ -28,7 +28,8 @@
         "<all_urls>"
       ],
       "js": [
-        "src/inject/inject.js"
+        "src/inject/inject.js",
+        "js/FileSaver.min.js"
       ]
     }
   ]
